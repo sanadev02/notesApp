@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Notes.Views.CameraPage"
+             Title="CameraPage">
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,10"
+            VerticalOptions="Fill"
+            HorizontalOptions="Fill">
+            <Label>
+                Capture photos of your creations here:
+            </Label>
+            <Button Text="Camera" Clicked="Button_Clicked" />
+            <Button
+                  Text="Photo Gallery"
+                  Clicked="TakePhoto"
+                  />
+            <Image x:Name="myImage" WidthRequest="100" HeightRequest="100"  />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Notes.Views.TimerPage"
+             Title="TimerPage">
+    <StackLayout
+        VerticalOptions="Center">
+        <!--<Label
+            x:Name="timeLabel"
+            Text="0:000"
+            FontSize="70"
+            TextColor="Blue"
+            HorizontalOptions="Center" />-->
+
+        <!--<StackLayout
+            Orientation="Horizontal"
+            HorizontalOptions="Center"
+            Spacing="12"
+            Margin="0,60,0,0"
+            >
+            <ImageButton
+                x:Name="startStopButton"
+                Clicked="OnStartStop"
+                Source="play"
+                BackgroundColor="Transparent"
+                HeightRequest="60"
+                WidthRequest="60"
+                />
+            <ImageButton
+                Clicked="OnReset"
+                Source="reset"
+                BackgroundColor="Transparent"
+                HeightRequest="60"
+                WidthRequest="60"
+                />
+
+        </StackLayout>-->
+
+        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+        <Grid>
+            <!--<GraphicsView x:Name="ProgressView"
+                          BackgroundColor="{StaticResource Primary}"
+                          HeightRequest="100"
+                          WidthRequest="100"/>-->
+            <Button x:Name="ProgressButton"
+                    Text="+"
+                    FontSize="32"
+                    HeightRequest="80"
+                    WidthRequest="80"
+                    CornerRadius="40"
+                    HorizontalOptions="Center"
+                    Clicked="StartButton_OnClicked"
+                    BorderWidth="0"
+                    BackgroundColor="{StaticResource Primary}"/>
+        </Grid>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+        <Entry x:Name="DurationEntry"
+           Placeholder="Enter Duration (mm:ss)"
+           TextChanged="DurationEntry_TextChanged"
+           WidthRequest="200"
+           HorizontalOptions="Center"/>
+    </StackLayout>
+        <Button x:Name="ResetButton"
+                Text="Reset"
+                Clicked="ResetButton_OnClicked"
+                TextColor="WhiteSmoke"/>
+    </VerticalStackLayout>
+    </StackLayout>
+</ContentPage>
