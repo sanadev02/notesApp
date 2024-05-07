@@ -5,40 +5,13 @@ namespace Notes.Views;
 
 public partial class TimerPage
 {
-    //private TimeOnly time = new();
-    //private bool isRunning;
-
-    //private DateTime _startTime;
-    //private CancellationTokenSource _cancellationTokenSource;
-    //private double _duration;
-
-    //   public TimerPage()
-    //{
-    //	InitializeComponent();
-    //}
-
-    //private async void OnStartStop(object sender, EventArgs e)
-    //{
-    //	isRunning = !isRunning;
-    //	startStopButton.Source = isRunning ? "pause" : "play";
-
-    //	while (isRunning)
-    //	{
-    //		time = time.Add(TimeSpan.FromSeconds(1));
-    //		SetTime();
-    //		await Task.Delay(TimeSpan.FromSeconds(1));
-    //	}
-    //}
-
-    //private void SetTime()
-    //{
-    //	timeLabel.Text = $"{time.Minute}:{time.Second:000}";
-    //}
     private readonly ProgressArc _progressArc;
     private DateTime _startTime;
     private int _duration = 60;
     private double _progress;
     private CancellationTokenSource _cancellationTokenSource = new();
+    private bool _isRunning = false;
+    private TimeSpan _elapsedTime = TimeSpan.Zero;
 
     public TimerPage()
     {
@@ -50,27 +23,56 @@ public partial class TimerPage
     {
         base.OnAppearing();
         ProgressButton.Text = "\uf144"; // Play icon - workaround because setting it in xaml broke the build for some reason
-        //ProgressView.Drawable = _progressArc;
+        //ProgressView.Drawable = _progressArc;['
     }
 
     // Handle button click events
+
     private void StartButton_OnClicked(object sender, EventArgs e)
     {
-        _startTime = DateTime.Now;
-        _cancellationTokenSource = new CancellationTokenSource();
-        UpdateArc();
+        if (!_isRunning)
+        {
+            _startTime = DateTime.Now - _elapsedTime;
+            _cancellationTokenSource = new CancellationTokenSource();
+            _isRunning = true;
+            UpdateArc();
+        }
+        else if (_isRunning && !_cancellationTokenSource.IsCancellationRequested)
+        {
+            _elapsedTime = DateTime.Now - _startTime;
+            _cancellationTokenSource.Cancel();
+        }
+        else
+        {
+            _startTime = DateTime.Now - _elapsedTime;
+            _cancellationTokenSource = new CancellationTokenSource();
+            UpdateArc();
+        }
     }
+
+
+
+
+    //// Stop the timer 
+    //private void StopButton_OnClicked(object sender, EventArgs e)
+    //{
+    //    _cancellationTokenSource.Cancel();
+    //    _isRunning = false; 
+    //}
+
 
     // Cancel the update loop
     private void ResetButton_OnClicked(object sender, EventArgs e)
     {
         _cancellationTokenSource.Cancel();
-        UpdateArc();
+        _elapsedTime = TimeSpan.Zero;
+        _isRunning = false;
+        ResetView();
     }
 
     private async void UpdateArc()
     {
-        while (!_cancellationTokenSource.Token.IsCancellationRequested)
+        while (!_cancellationTokenSource.Token.IsCancellationRequested && _isRunning)
         {
             TimeSpan elapsedTime = DateTime.Now - _startTime;
             int secondsRemaining = (int)(_duration - elapsedTime.TotalSeconds);
@@ -80,18 +82,22 @@ public partial class TimerPage
             _progress = Math.Ceiling(elapsedTime.TotalSeconds);
             _progress %= _duration;
             _progressArc.Progress = _progress / _duration;
-            //ProgressView.Invalidate();
 
             if (secondsRemaining == 0)
             {
                 _cancellationTokenSource.Cancel();
-                return;
+                _isRunning = false;
+                Vibrate(); // Call the vibrate method when the timer reaches zero
+                break;
             }
 
             await Task.Delay(500);
         }
 
-        ResetView();
+        if (!_isRunning)
+        {
+            ResetView();
+        }
     }
 
     private void ResetView()
@@ -104,24 +110,16 @@ public partial class TimerPage
 
     private void DurationEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
-        string[] parts = DurationEntry.Text.Split(':');
-
-        if (parts.Length == 2 && int.TryParse(parts[0], out int minutes) && int.TryParse(parts[1], out int seconds))
+        if (int.TryParse(DurationEntry.Text, out int minutes))
         {
-            // Ensure minutes and seconds are within valid ranges
+            // Ensure minutes are within valid ranges
             minutes = Math.Max(0, minutes);
-            seconds = Math.Max(0, seconds);
-            seconds = Math.Min(59, seconds);
 
-            _duration = minutes * 60 + seconds;
+            _duration = minutes * 60;
         }
     }
 
-    //TimePicker timePicker = new TimePicker
-    //{
-    //    Time = new TimeSpan(4, 15, 26), // Time set to "04:15:26"
-    //    //Debug.WriteLine("times up!"),
-    //};
+
 
     public class ProgressArc : IDrawable
     {
@@ -138,4 +136,14 @@ public partial class TimerPage
         }
 
     }
+
+    private void Vibrate()
+    {
+        double secondsToVibrate = 0.2;
+        TimeSpan vibrationLength = TimeSpan.FromSeconds(secondsToVibrate);
+
+        Vibration.Default.Vibrate(vibrationLength);
+        Console.WriteLine("vibrating");
+    }
+
 }

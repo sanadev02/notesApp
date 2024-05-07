@@ -33,7 +33,7 @@ public partial class NotePage : ContentPage
         if (BindingContext is Models.Note note)
         {
             // Save both name and text to the file
-            string content = $"{note.Text}";
+            string content = $"{note.Name}\n{note.Text}";
             File.WriteAllText(note.Filename, content);
         }
 
@@ -57,8 +57,15 @@ public partial class NotePage : ContentPage
         if (File.Exists(fileName))
         {
             noteModel.Date = File.GetCreationTime(fileName);
-            noteModel.Text = File.ReadAllText(fileName);
-           
+            string[] lines = File.ReadAllLines(fileName);
+            if (lines.Length > 0)
+            {
+                noteModel.Name = lines[0];
+                if (lines.Length > 1)
+                {
+                    noteModel.Text = string.Join("\n", lines.Skip(1));
+                }
+            }
         }
         BindingContext = noteModel;
     }

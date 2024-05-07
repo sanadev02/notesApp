@@ -5,11 +5,9 @@
              xmlns:views="clr-namespace:Notes.Views"
              x:Name="thisPage"
              Title="Your Recipes">
-<!-- Add an item to the toolbar -->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Clicked="Add_Clicked" IconImageSource="{
-                     FontImage Glyph=[ + ], Color=White , Size=22}" />
-        <ToolbarItem Text="Vibrate" Clicked="VibrateStartButton_Clicked"/>
+        <ToolbarItem Text="Add" Clicked="Add_Clicked" IconImageSource="{FontImage Glyph=[+], Color=White, Size=22}" />
+        <!--<ToolbarItem Text="Vibrate" Clicked="VibrateStartButton_Clicked"/>-->
     </ContentPage.ToolbarItems>
 
     <CollectionView x:Name="notesCollection"
@@ -22,14 +20,11 @@
                 <Frame Margin="1" Padding="10">
                     <SwipeView>
                         <SwipeView.RightItems>
-                            <SwipeItems >
+                            <SwipeItems>
                                 <SwipeItem Text="Delete"
-                                           BackgroundColor="green"
-                                           Invoked="OnDeleteSwipeItemInvoked"                                     
-                                           />
-                                   <SwipeItem Text="Delete" BackgroundColor="Red"
-                                              Command="{Binding Source={RelativeSource AncestorType={x:Type views:AllNotesPage}}, Path=DeleteCommand}"
-                                              CommandParameter="{Binding .}" />
+                                           BackgroundColor="Red"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type views:AllNotesPage}}, Path=DeleteCommand}"
+                                           CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
                         <StackLayout>
@@ -38,7 +33,6 @@
                         </StackLayout>
                     </SwipeView>
                 </Frame>
-
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
